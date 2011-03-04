@@ -2,11 +2,11 @@
 #include <signal.h>
 #include <stdint.h>
 
-#define LED0 			BIT0
-#define LED1 			BIT6
-#define LED_OUT  	P1OUT
+#define LED0			BIT0
+#define LED1			BIT6
+#define LED_OUT		P1OUT
 
-void main(void) 
+void main(void)
 {
 	WDTCTL = WDTPW + WDTHOLD; // Stop watchdog timer
 
@@ -21,7 +21,6 @@ void main(void)
 // Port 1 interrupt service routine
 interrupt(PORT1_VECTOR) Port_1(void)
 {
- 	LED_OUT ^= (LED0|LED1);
-  P1IFG 	&= ~0x08; // P1.4 IFG cleared
+	LED_OUT ^= (LED0|LED1);
+	P1IFG 	&= ~0x08; // P1.4 IFG cleared
 }
-
