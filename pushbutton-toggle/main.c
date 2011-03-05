@@ -11,10 +11,13 @@ void main(void)
 	WDTCTL = WDTPW + WDTHOLD; // Stop watchdog timer
 
 	P1DIR |= (LED0|LED1); // Set P1.0 to output direction
-	P1IE 	|= 0x08; // P1.4 interrupt enabled
-	P1IES |= 0x08; // P1.4 Hi/lo edge
-	P1IFG &= ~0x08; // P1.4 IFG cleared
-	LED_OUT = LED1;
+  P1OUT = LED0;        // Turn on LED0
+
+
+	P1IE 	|= BIT3; // P1.3 interrupt enabled
+	P1IES |= BIT3; // P1.3 Hi/lo edge
+	P1IFG &= ~BIT3; // P1.3 IFG cleared
+
 	_BIS_SR(GIE); // Enter LPM4 w/interrupt
 }
 
@@ -22,5 +25,5 @@ void main(void)
 interrupt(PORT1_VECTOR) Port_1(void)
 {
 	LED_OUT ^= (LED0|LED1);
-	P1IFG 	&= ~0x08; // P1.4 IFG cleared
+	P1IFG 	&= ~BIT3; // P1.3 IFG cleared. Acknowledge the transition
 }
