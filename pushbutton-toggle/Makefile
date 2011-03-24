@@ -1,17 +1,29 @@
 TARGET=main
+
 CC=msp430-gcc
-CFLAGS=-Wall -O2 -mmcu=msp430x2231 -Wa,-ahlms=myfile.lst
-OBJS=main.o
+SIZE=msp430-size
+STRIP=msp430-strip
+
+CFLAGS=-Os -Wall -g -mmcu=msp430x2013 -ffunction-sections -fdata-sections -fno-inline-small-functions
+
+LDFLAGS = -Wl,-Map=$(TARGET).map,--cref
+LDFLAGS += -Wl,--relax
+LDFLAGS += -Wl,--gc-sections
+
+OBJS=$(TARGET).o
 
 all: $(TARGET).elf
-	msp430-size --target=elf32-msp430 main.elf
-	mspdebug rf2500 "prog $(TARGET).elf"
 
 $(TARGET).elf: $(OBJS)
-	$(CC) $(CFLAGS) -o main.elf $(OBJS)
+	$(CC) $(CFLAGS) -o $(TARGET).elf $(OBJS) $(LDFLAGS)
+	$(STRIP) $(TARGET).elf
+	$(SIZE) --format=sysv $(TARGET).elf
+
+program: $(TARGET).elf
+	mspdebug rf2500 "prog $(TARGET).elf"
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $<
 
 clean:
-	rm -fr $(TARGET).elf $(OBJS)
+	rm -rf $(TARGET).elf $(OBJS) $(TARGET).map

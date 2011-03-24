@@ -6,7 +6,7 @@
 #define LED1			BIT6
 #define LED_OUT		P1OUT
 
-void main(void)
+int main(void)
 {
 	WDTCTL = WDTPW + WDTHOLD; // Stop watchdog timer
 
@@ -19,6 +19,8 @@ void main(void)
 	P1IFG &= ~BIT3; // P1.3 IFG cleared
 
 	_BIS_SR(GIE); // Enter LPM4 w/interrupt
+	
+	return 0;
 }
 
 // Port 1 interrupt service routine
